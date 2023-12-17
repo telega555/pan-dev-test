@@ -1,0 +1,23 @@
+server:
+  port: 8084
+  ssl:
+    enabled: false
+
+spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    virtual-host: "/"
+    username: "user"
+    password: "password"
+    queues:
+      text-message-update: pandev_text_message_update.queue
+      answer-message: pandev_answer_message.queue
+
+bot:
+  name: pan_dev_test_bot
+  token: 6984219114:AAFogBLXjjYLAQzzL7L5GlUfEu0q9JSSRs8
+  uri:   https://early-readers-suffer.loca.lt
+
+
+webhook-url: /callback/update

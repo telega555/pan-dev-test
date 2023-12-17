@@ -1,0 +1,22 @@
+server:
+  port: 8085
+
+spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: user
+    password: password
+    virtual-host: "/"
+    queues:
+      text-message-update: pandev_text_message_update.queue
+      answer-message: pandev_answer_message.queue
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/pan_dev_test
+    username: postgres
+    password: 1234
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create

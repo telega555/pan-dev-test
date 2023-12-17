@@ -1,0 +1,57 @@
+version: '3.9'
+
+services:
+  postgresql:
+    image: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - /var/lib/docker/volumes/dispatcher_data/_data:/var/lib/postgresql/data
+    networks:
+      - pandev-network
+    environment:
+      - POSTGRES_PASSWORD=1234
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=pan_dev_test
+
+  service:
+    image: postgres
+    ports:
+      - 8085:8080
+    networks:
+      - pandev-network
+    depends_on:
+      - postgresql
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+    environment:
+      - JAVA_FLAGS="-Xmx500m -Dlogging.level.com.zaxxer.hikari.HikariConfig=DEBUG"
+      - DB_URL=jdbc:postgresql://localhost:5432/pan_dev_test
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=1234
+      - APP_PORT=8084
+
+  rabbitmq:
+    container_name: rabbitmq-pan-dev-test
+    image: "rabbitmq:management"
+    hostname: "rabbitmq"
+    environment:
+      RABBITMQ_ERLANG_COOKIE: "secretcookie"
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: password
+      RABBITMQ_DEFAULT_VHOST: "/"
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    networks:
+      - pandev-network
+
+volumes:
+  postgresql-data:
+    driver: local
+
+networks:
+  pandev-network:
+    attachable: true
